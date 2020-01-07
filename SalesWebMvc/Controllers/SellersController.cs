@@ -39,6 +39,7 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Seller seller)
         {
+            
             if (!ModelState.IsValid)
             {
                 var departments = await _departmentService.FindAllAsync();
@@ -70,8 +71,18 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+
+            try
+            {
             await _sellerService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
+
+            }
+            catch (IntegrityException e)
+            {
+
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
+            }
         }
 
         public async Task<IActionResult> Details(int? id)
